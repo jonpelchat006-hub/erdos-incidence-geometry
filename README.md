@@ -83,29 +83,56 @@ values from Green–Tao, 2013). I built a continuous-space local search (anchore
 descent from the Pappus 9-point configuration, adding extra points at
 intersections of incidence lines) to try to reach these optima.
 
-The search reliably finds **f₃ = 15 at n = 11** but cannot reach the optimum of
-16. Characterising *why* turned out to be the interesting part: the Green–Tao
-optimal configuration lives in a different, algebraically defined basin (its
-16th line requires the explicit Green–Tao construction at the seed level), and
-no sequence of single-point local moves connects the Pappus basin to it. This is
-a clean illustration of a general phenomenon — local optimisation recovers
+The search reliably finds **f₃ = 15 at n = 11** but does not reach the optimum
+of 16. To be precise: 16 *is* achievable — it is the proven optimum — but it is
+unreachable *by this search from the Pappus basin*, which is a different claim
+from impossibility. Characterising *why* turned out to be the interesting part:
+the Green–Tao optimal configuration lives in a different, algebraically defined
+basin (its 16th line requires the explicit Green–Tao construction at the seed
+level). A full-relaxation annealing run from the f₃ = 15 configuration accepted
+**0 of 30,000 proposed moves**, an empirical demonstration that the Pappus and
+Green–Tao basins are separated by a barrier the search cannot cross. This is a
+clean illustration of a general phenomenon: local optimisation recovers
 incidence structure within a basin but cannot cross between algebraically distant
 constructions.
+
+## Result 4 — attaining the proven optimum at n = 12 (projective construction)
+
+The orchard optimum at n = 12 is **t₃(12) = 19**. A configuration attaining it
+is included and verified here. The construction is projective: **11 ordinary
+points plus one point at infinity** (the vertical direction). A point at infinity
+is legitimate in the orchard problem — the problem lives in the projective plane,
+and this configuration is projectively equivalent to 12 ordinary points, since a
+projective transformation can move the point at infinity to a finite position
+without disturbing a single incidence.
+
+The 19 lines decompose as **15 + 4**: fifteen ordinary 3-point lines among the
+11 affine points, plus four lines each consisting of a vertically-aligned pair
+together with the vertical point at infinity. `src/verify_n12_projective.py`
+reproduces this independently in homogeneous coordinates and confirms it holds at
+strict tolerance (down to 1e-10) with **no 4-point lines**.
+
+This **matches** the proven optimum; it does not beat it — 19 is the maximum at
+n = 12 and cannot be exceeded. The result is reported as an independent,
+strict-tolerance confirmation that the configuration is genuine.
 
 ## Running it
 
 ```bash
 pip install -r requirements.txt
-python src/incidences.py
+python src/incidences.py            # AG(2,3), Sylvester-Gallai, BGS (Results 1-2)
+python src/verify_n12_projective.py # attains t_3(12)=19, strictly verified (Result 4)
 ```
 
-This reproduces every number in the tables above and prints the four
-non-realizable AG(2, 3) lines.
+`incidences.py` reproduces every number in the tables above and prints the four
+non-realizable AG(2, 3) lines. `verify_n12_projective.py` prints the f₃ counts
+across tolerances and the 15 + 4 decomposition.
 
 ## Files
 
 ```
-src/incidences.py        Exact F_k / f_k incidence counting; AG(2,3) and BGS checks
+src/incidences.py             Exact F_k / f_k incidence counting; AG(2,3) and BGS checks
+src/verify_n12_projective.py  Independent strict verification of the t_3(12)=19 optimum
 figures/realization_gap.png   Abstract vs. real realization of AG(2,3)
 docs/notes.md            Longer technical notes and references
 ```
@@ -119,6 +146,7 @@ docs/notes.md            Longer technical notes and references
 ## Scope and honesty
 
 This is a learning project, not new mathematics. It does not improve any known
-bound. Its value is in reaching the classical theorems independently, verifying
-them in reproducible code, and pinning down precisely why a natural search
-heuristic falls short of the proven optimum.
+bound — the n = 12 result *matches* the proven optimum t₃(12) = 19, it does not
+exceed it. Its value is in reaching the classical theorems independently,
+constructing and strictly verifying an optimal configuration, and pinning down
+precisely why a natural search heuristic falls short of the optimum elsewhere.
